@@ -1,0 +1,29 @@
+
+header img {
+    width: 200px;
+}
+
+body {
+    background-color: rgb(47, 45, 45);
+    color: whitesmoke;
+}
+
+img.logosite{
+    height: 100%;
+    width: 200px;
+}
+
+.titulo{
+    margin-top: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.info{
+    margin-top: 25px;
+}
+
+.descricao{
+    margin-left: 20px;
+    margin-right: 20px;
+}

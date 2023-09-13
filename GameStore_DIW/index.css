@@ -1,0 +1,102 @@
+/* ================================================   Geral   ================================================ */
+
+img{
+    height: 200px;
+}
+
+body,ul,li,p {
+    margin: 0px;
+    padding: 0px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+ul>li {
+    list-style: none; /*Tira as bolinhas das listas desordenadas*/
+}
+
+a {
+    text-decoration: none; /*Tira todos os sublinhados dos links*/
+    color: white;
+}
+
+body {
+    background-color: rgb(47, 45, 45);
+    color: whitesmoke;
+}
+
+/* ================================================   Cabeçalho   ================================================ */
+
+img.logosite{
+    height: 100%;
+    width: 200px;
+}
+
+/* ================================================   Destaque   ================================================ */
+
+#destaques{ /*titulo1*/
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+p.plat{
+    margin-bottom: 10px;
+}
+
+.cJogo{
+    margin-bottom: 20px;
+}
+
+#proximo{
+    text-align: right;
+}
+
+#anterior{
+    text-align: left;
+}
+
+/* ================================================   Gênero   ================================================ */
+#generos{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.gen{
+    margin-top: 20px;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    background-color: rgb(68, 67, 67, 0.92);
+}
+
+#proximoGen{
+    margin-top: 20px;
+    text-align: right;
+}
+
+#anteriorGen{
+    margin-top: 20px;
+    text-align: left;
+}
+
+/* ================================================   Sobre   ================================================ */
+section.info{
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+/* ================================================   Rodapé   ================================================ */
+footer {
+    background-color: rgb(68, 67, 67, 0.92);
+}
+
+.footerItems{
+    text-align: center;
+}
+
+img.pucLogo {
+    width: 110px;
+    height: 100px;
+    margin: 10px;
+    display: inline;
+}

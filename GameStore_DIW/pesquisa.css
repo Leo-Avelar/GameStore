@@ -1,0 +1,33 @@
+
+header img {
+    width: 200px;
+}
+
+body {
+    background-color: rgb(47, 45, 45);
+    color: whitesmoke;
+}
+
+img{
+    height: 200px;
+}
+
+img.logosite{
+    height: 100%;
+    width: 200px;
+}
+
+.nomePesquisado{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.cJogo{
+    margin-bottom: 20px;
+}
+
+.jogosEncontrados{
+    margin-left: 25px;
+    margin-bottom: 30px;
+}
