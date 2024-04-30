@@ -1,43 +1,46 @@
-
 const apiKey = `c8480a13dcac4dfaa44b8283eb7f0bc7`
-let textoPesquisa = document.getElementById("txtPesquisa")
-let botaoPesquisa = document.getElementById("btnPesquisa")
-let gamesPlace = document.getElementById("gamesPlace")
-let opcoesGenero = document.getElementById("opcoesGenero")
-let generosPlace = document.getElementById("generosPlace")
+
+//Places HTML:
+const gamesPlace = document.getElementById("gamesPlace")
+const generosPlace = document.getElementById("generosPlace")
+const filterPlace = document.getElementById("filterPlace")
+
+// Search:
+const searchedGame = document.getElementById("txtPesquisa")
+const searchButton = document.getElementById("btnPesquisa")
+
+// Format:
 const pageSize = 8
 const pageSize2 = 4
 
-document.body.onload = () => {
-    listGames()
-    nomeGeneros()
-    listGenerosCard()
+//Filter HTML:
+const genreHtmlID = document.getElementById("opcoesGenero")
+const platformHtmlID = document.getElementById("opcoesPlataforma")
+const storeHtmlID = document.getElementById("opcoesLoja")
 
-    botaoPesquisa.addEventListener("click", pesquisar)
-    opcoesGenero.addEventListener("change", mudarGenero)
+document.body.onload = () => {
+    listAllGames()
+    getFilterOptions()
+    listGenresCards()
+
+    searchButton.addEventListener("click", search)
+
+    genreHtmlID.addEventListener("change", listGamesByFilter)
+    platformHtmlID.addEventListener("change", listGamesByFilter)
+    storeHtmlID.addEventListener("change", listGamesByFilter)
 }
 
-function listGames(page) {
+function listAllGames(page) { //Destaque
     if (!page) page = 1
     let url = `https://api.rawg.io/api/games?key=${apiKey}&page=${page}&page_size=${pageSize}`
 
     fetch(url)
-        .then(dados => dados.json())
+        .then(data => data.json())
         .then(
-            dados => {
-                showGames(dados)
+            data => {
+                showGames(data)
 
-                let prox = ""
-                let ant = ""
-
-                if (page > 1) {
-                    ant = `<button onclick="listGames(${page - 1})" id="carregar" type="button" class="btn btn-outline-light"> Anterior</button>`
-                }
-                prox = `<button onclick="listGames(${page + 1})" id="carregar" type="button" class="btn btn-outline-light"> Próximo</button>`
-
-                document.getElementById("anterior").innerHTML = ant
-                document.getElementById("proximo").innerHTML = prox
-
+                nextOrPrevious(page, "listAllGames", "proximo", "anterior", data.next)
             }
         )
 }
@@ -50,13 +53,30 @@ function showGames(dados) {
         jogo => {
 
             let plataformas = ''
-            for (let j = 0; j < jogo.platforms.length; j++) {
-                plataformas += jogo.platforms[j].platform.name + ' | '
+
+            if (jogo.platforms) {
+                for (let j = 0; j < jogo.platforms.length; j++) {
+                    plataformas += jogo.platforms[j].platform.name
+                    if (j < jogo.platforms.length - 1) {
+                        plataformas += ' | ';
+                    }
+                }
+            }
+            else {
+                plataformas = "Plataformas desconhecidas"
             }
 
             let generos = ''
-            for (let j = 0; j < jogo.genres.length; j++) {
-                generos += jogo.genres[j].name + ' | '
+            if (jogo.genres) {
+                for (let j = 0; j < jogo.genres.length; j++) {
+                    generos += jogo.genres[j].name
+                    if (j < jogo.genres.length - 1) {
+                        generos += ' | ';
+                    }
+                }
+            }
+            else {
+                generos = "Desconhecidos"
             }
 
             html += `
@@ -78,66 +98,88 @@ function showGames(dados) {
     gamesPlace.innerHTML = html;
 }
 
-function pesquisar() {
-    let texto = textoPesquisa.value
-    window.open(`pesquisa.html?search=${texto}`)
+// Filter options =======================================
+
+function getFilterOptions() {
+    getOptions(`https://api.rawg.io/api/genres?key=${apiKey}`, 'Todos os gêneros', genreHtmlID)
+    getOptions(`https://api.rawg.io/api/platforms?key=${apiKey}`, 'Todas as plataformas', platformHtmlID)
+    getOptions(`https://api.rawg.io/api/stores?key=${apiKey}`, 'Todas as lojas', storeHtmlID)
+
 }
 
-function nomeGeneros() {
+function getOptions(url, defaultText, htmlID) {
+    fetch(url)
+        .then(data => data.json())
+        .then(
+            data => {
 
-    let url = `https://api.rawg.io/api/genres?key=${apiKey}`
+                let html = ''
+                let results = data.results
+
+                html = `<option value="0">${defaultText}</option>`
+
+                results.forEach(
+                    option => {
+                        html += `<option value="${option.id}">${option.name}</option>`
+                    }
+                );
+                htmlID.innerHTML = html
+            }
+        )
+}
+
+function listGamesByFilter(){
+    let page = 1
+    let url = `https://api.rawg.io/api/games?key=${apiKey}&page=${page}&page_size=${pageSize}`
+    
+    if (genreHtmlID.value != 0) {
+        url += `&genres=${genreHtmlID.value}`
+    }
+
+    if (platformHtmlID.value != 0) {
+        url += `&platforms=${platformHtmlID.value}`
+    }
+    
+    if (storeHtmlID.value != 0){
+        url += `&stores=${storeHtmlID.value}`
+    }
+    listGames(1,url)
+}
+
+function listGames(page, url) {
+    if (!page) page = 1
 
     fetch(url)
         .then(dados => dados.json())
         .then(
             dados => {
-
-                let html = ''
-                let resultados = dados.results
-
-                html = `<option value="0">Todos os gêneros</option>`
-
-                resultados.forEach(
-                    dados => {
-
-                        html += `<option value="${dados.id}">${dados.name}</option>`
-                    }
-                );
-                document.getElementById("opcoesGenero").innerHTML = html
+                showGames(dados)
+                nextOrPrevious(page, "listGames", "proximo", "anterior", dados.next)
             }
         )
 }
 
-function mudarGenero() {
-    filtro = opcoesGenero.value
+//=======================================================
 
-    if (opcoesGenero.value != 0) {
+function nextOrPrevious(page, funct, nextID, previousID, dataNext) {
+    let next = ""
+    let prev = ""
 
-        document.getElementById("anterior").innerHTML = ""
-        document.getElementById("proximo").innerHTML = ""
-
-        let url = `https://api.rawg.io/api/genres/${filtro}?key=${apiKey}`
-        fetch(url)
-            .then(dados => dados.json())
-            .then(
-                dados => {
-                    document.getElementById("destaques").innerHTML = `${dados.name}`
-                }
-            )
-
-        url = `https://api.rawg.io/api/games?key=${apiKey}&genres=${filtro}`
-
-        fetch(url)
-            .then(dados => dados.json())
-            .then(dados => showGames(dados))
+    if (page > 1) {
+        prev = `<button onclick="${funct}(${page - 1})" id="carregar" type="button" class="btn btn-outline-light"> Anterior</button>`
     }
-    else {
-        document.getElementById("destaques").innerHTML = `Destaques`
-        listGames()
+
+    if (dataNext != null) {
+        next = `<button onclick="${funct}(${page + 1})" id="carregar" type="button" class="btn btn-outline-light"> Próximo</button>`
     }
+
+    document.getElementById(`${previousID}`).innerHTML = prev
+    document.getElementById(`${nextID}`).innerHTML = next
 }
 
-function listGenerosCard(page){
+
+// Genres cards ===================================
+function listGenresCards(page) {
     if (!page) page = 1
     let url = `https://api.rawg.io/api/genres?key=${apiKey}&page=${page}&page_size=${pageSize2}`
 
@@ -145,24 +187,13 @@ function listGenerosCard(page){
         .then(dados => dados.json())
         .then(
             dados => {
-                showGenres(dados)
-
-                let prox = ""
-                let ant = ""
-
-                if (page > 1) {
-                    ant = `<button onclick="listGenerosCard(${page - 1})" id="carregar" type="button" class="btn btn-outline-light"> Anterior</button>`
-                }
-                prox = `<button onclick="listGenerosCard(${page + 1})" id="carregar" type="button" class="btn btn-outline-light"> Próximo</button>`
-
-                document.getElementById("anteriorGen").innerHTML = ant
-                document.getElementById("proximoGen").innerHTML = prox
-
+                showGenresCards(dados)
+                nextOrPrevious(page, "listGenresCards", "proximoGen", "anteriorGen", dados.next)
             }
         )
 }
 
-function showGenres(dados) {
+function showGenresCards(dados) {
     let html = ''
     let resultados = dados.results
 
@@ -190,3 +221,12 @@ function showGenres(dados) {
     )
     generosPlace.innerHTML = html;
 }
+// ================================================
+  
+// Search ================
+function search(event) {
+    event.preventDefault() //evita que a página seja recarregada
+    window.open(`pesquisa.html?search=${searchedGame.value}`)
+}
+// =======================
+

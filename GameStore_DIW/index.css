@@ -30,13 +30,37 @@ img.logosite{
     height: 100%;
     width: 200px;
 }
+#navbarItens{
+    align-items: center;
+}
+#navbarNav{
+    justify-content: space-between;
+}
 
 /* ================================================   Destaque   ================================================ */
 
+#title_Options{
+    margin-top: 30px;
+}
+
+#filterPlace{
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+#filters2{
+    justify-content: right;
+}
+
 #destaques{ /*titulo1*/
     margin-top: 20px;
+    margin-left: 5px;
     margin-bottom: 20px;
-    text-align: center;
+    text-align: left;
+    max-width: 20%;
+}
+
+#changeOptions{
+    align-self: center;
 }
 
 p.plat{
@@ -85,6 +109,10 @@ section.info{
     margin-bottom: 10px;
 }
 
+#redesSociais{
+    padding-top: 25px;
+}
+
 /* ================================================   Rodapé   ================================================ */
 footer {
     background-color: rgb(68, 67, 67, 0.92);
@@ -99,4 +127,8 @@ img.pucLogo {
     height: 100px;
     margin: 10px;
     display: inline;
+}
+
+.card {
+    height: 100%;
 }
